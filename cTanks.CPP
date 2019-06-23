@@ -2,8 +2,8 @@
 #include <graphics.h>
 #include <math.h>
 #include <dos.h>
-#include <string.h>
 #include <conio.h>
+#include <fstream.h>
 
 class player{
 public:
@@ -40,18 +40,20 @@ void tankmove(player &pl1,player &pl2,char a);
 void reverse(char *str, int len);
 int intToStr(int x, char str[], int d);
 void ftoa(float n, char *res, int afterpoint);
-
+void display_d_all(void);
 
 int xmax,ymax;
+
+char points[20],bomb[20],v[20],move[20],theta[20];
 
 // reverses a string 'str' of length 'len'
 void reverse(char *str, int len)
 {
     int i=0, j=len-1, temp;
-    while (i<j)
-    {
+        while (i<j)
+   {
         temp = str[i];
-        str[i] = str[j];
+	str[i] = str[j];
         str[j] = temp;
         i++; j--;
     }
@@ -67,7 +69,7 @@ int intToStr(int x, char str[], int d)
     {
         str[i++] = (x%10) + '0';
         x = x/10;
-    }
+            }
  
     // If number of digits required is more, then
     // add 0s at the beginning
@@ -75,8 +77,8 @@ int intToStr(int x, char str[], int d)
         str[i++] = '0';
  
     reverse(str, i);
-    str[i] = '\0';
-    return i;
+    str[i] = '\0'; 
+       return i;
 }
  
 // Converts a floating point number to string.
@@ -87,10 +89,10 @@ void ftoa(float n, char *res, int afterpoint)
  
     // Extract floating part
     float fpart = n - (float)ipart;
- 
+  
     // convert integer part to string
     int i = intToStr(ipart, res, 0);
- 
+
     // check for display option after point
     if (afterpoint != 0)
     {
@@ -104,30 +106,15 @@ void ftoa(float n, char *res, int afterpoint)
         intToStr((int)fpart, res + i + 1, afterpoint);
     }
 }
-
-// driver program to test above funtion
-
-/*
-int main()
-{
-    char res[20];
-    float n = 233.01257654;
-    ftoa(n, res, 4);
-    cout<<res;
-    getch();
-    return 0;
-}
-*/
-
-float d_r(float theta){  //degree to radian converter.
+ 
+float d_r(float theta){  //degree to radians converter.
 	return (theta*0.01745);
 }
 
 
+
 void set_b(void){   //function to set the background for fire and explode functions.
-	environment();
-	display_d(player1,'1');
-	display_d(player2,'2');
+	environment();	
 	tank(player1.x,player1.c,player1.theta);
 	tank(player2.x,player2.c,player2.theta);
 }
@@ -142,7 +129,7 @@ void set_b1(player pl1,player pl2){ //function to set background for tankmove fu
 int modify(int i,player &pl1,player &pl2){ 
 	setcolor(BLACK);
 	if(i==2){
-		outtextxy(5,ymax-185,"Enter Velocity(0-100)(pixels per second)");
+		outtextxy(5,ymax-185,"Enter Velocity(0-100)");
 		float n;
 		cin>>n;	
 		if(n<=100&&n>=0) {
@@ -152,7 +139,9 @@ int modify(int i,player &pl1,player &pl2){
 			outtextxy(5,ymax-185,"WRONG INPUT!");
 			delay(2000);
 			return 0;
-		} }
+		} 
+	}
+
 	else if(i==3){
 		if(pl1.move>0){
 			outtextxy(5,ymax-185,"Where to move? Backward(b or B) or Forward(f or F)");
@@ -168,12 +157,17 @@ int modify(int i,player &pl1,player &pl2){
 			return 0;
 			}
 		}
-	}
+	
 	else if(i==4){
-		outtextxy(5,ymax-185,"Enter Angle.");
+		outtextxy(5,ymax-185,"Enter Angle.(30-150)");
 		float j;
 		cin>>j;
+		if(j>=30&&j<=150){
 		pl1.theta=j;
+		return 1;
+		}
+		else
+		return 0;
 	}
 	else if(i==1){
 		if(pl1.points-pl2.points<150){
@@ -193,15 +187,47 @@ int modify(int i,player &pl1,player &pl2){
 }
 
 void d_volley(int i,char l){
-	setcolor(BLACK);
+	setfillstyle(SOLID_FILL,BLACK);
 	bar(xmax*0.5-100,0,xmax*0.5+100,20);
-	char a[20]="VOLLEY ";
-	strcat(a,l);
 	setcolor(CYAN);
-	if(i!=10)
-		outtextxy(xmax*0.5-52,3,a);
+	if(i==1){
+		outtextxy(xmax*0.5-32,5,"VOLLEY"); 
+		outtextxy(xmax*0.5+24,5,"1");
+	}
+	else if(i==2){
+		outtextxy(xmax*0.5-32,5,"VOLLEY"); 
+		outtextxy(xmax*0.5+24,5,"2");
+	}
+	else if(i==3){
+		outtextxy(xmax*0.5-32,5,"VOLLEY"); 
+		outtextxy(xmax*0.5+24,5,"3");
+	}
+	else if(i==4){
+		outtextxy(xmax*0.5-32,5,"VOLLEY"); 
+		outtextxy(xmax*0.5+24,5,"4");
+	}
+	else if(i==5){
+		outtextxy(xmax*0.5-32,5,"VOLLEY"); 
+		outtextxy(xmax*0.5+24,5,"5");
+	}
+	else if(i==6){
+		outtextxy(xmax*0.5-32,5,"VOLLEY"); 
+		outtextxy(xmax*0.5+24,5,"6");
+	}
+	else if(i==7){
+		outtextxy(xmax*0.5-32,5,"VOLLEY"); 
+		outtextxy(xmax*0.5+24,5,"7");
+	}
+	else if(i==8){
+		outtextxy(xmax*0.5-32,5,"VOLLEY"); 
+		outtextxy(xmax*0.5+24,5,"8");
+	}
+	else if(i==9){
+		outtextxy(xmax*0.5-32,5,"VOLLEY"); 
+		outtextxy(xmax*0.5+24,5,"9");
+	}
 	else 
-		outtextxy(xmax*0.5-52,3,"FINAL VOLLEY");
+		outtextxy(xmax*0.5-48,5,"FINAL VOLLEY");
 	}
 
 void instructions(){
@@ -220,57 +246,64 @@ void instructions(){
 
 
 void environment(void){
-	setcolor(BROWN);
-	bar(0,ymax-200,xmax,ymax);
+	setfillstyle(SOLID_FILL,BROWN);
+	bar(0,ymax-199,xmax,ymax);
+}
+
+void display_d_all(void){
+	display_d(player1,'1');
+	display_d(player2,'2');
 }
 
 void display_d(player pl,char a){    //display details.
 	if(a=='1'){
-	setcolor(BLACK);
-	bar(75-5,ymax-460,75+225,ymax-260);
+	setfillstyle(SOLID_FILL,BLACK);
+	bar(75-5,ymax-465,75+225,ymax-260);
 	setcolor(RED);
-	outtextxy(75,ymax-470,"0. FIRE");
+	outtextxy(75,ymax-460,"0. FIRE");
+	setcolor(LIGHTGRAY);
+	outtextxy(75,ymax-440,"Points : ");
+	outtextxy(75,ymax-430,"1. Bomb Strength : ");
+	outtextxy(75,ymax-420,"2. Velocity : ");
+	outtextxy(75,ymax-410,"3. Moves Left : ");
+	outtextxy(75,ymax-400,"4. Angle : ");
 	setcolor(pl.c);
-	char a[30]="Points : " ,
-		b[30]="1. Bomb Strength : ",
-		c[30]="2. Velocity : ",
-		d[30]="3. Moves Left : ",
-		e[30]="4. Angle : ";
-	strcat(a,pl.points);
-	strcat(b,pl.bomb);
-	strcat(c,pl.v);
-	strcat(d,pl.move);
-	strcat(e,pl.theta);
+	ftoa(pl.points,points,1);
+	ftoa(pl.bomb,bomb,1);
+	ftoa(pl.v,v,1);
+	ftoa(pl.move,move,1);
+	ftoa(pl.theta,theta,1);
 	outtextxy(75,ymax-450,pl.name);
-	outtextxy(75,ymax-440,a);
-	outtextxy(75,ymax-430,b);
-	outtextxy(75,ymax-420,c);
-	outtextxy(75,ymax-410,d);
-	outtextxy(75,ymax-410,e);
+	outtextxy(147,ymax-440,points);
+	outtextxy(223,ymax-430,bomb);
+	outtextxy(179,ymax-420,v);
+	outtextxy(195,ymax-410,move);
+	outtextxy(155,ymax-400,theta);
 }
 
 else if(a=='2'){
-	setcolor(BLACK);
-	bar(xmax-200-5,ymax-460,xmax-200+225,ymax-260);
+	setfillstyle(SOLID_FILL,BLACK);
+	bar(xmax-200-5,ymax-465,xmax-200+225,ymax-260);
 	setcolor(RED);
-	outtextxy(xmax-200,ymax-470,"0. FIRE");
-	setcolor(pl.c); 
-	char a[30]="Points : " ,
-		b[30]="1. Bomb Strength : ",
-		c[30]="2. Velocity : ",
-		d[30]="3. Moves Left : ",
-		e[30]="4. Angle : ";
-	strcat(a,pl.points);
-	strcat(b,pl.bomb);
-	strcat(c,pl.v);
-	strcat(d,pl.move);
-	strcat(e,pl.theta);
+	outtextxy(xmax-200,ymax-460,"0. FIRE");
+	setcolor(LIGHTGRAY);
+	outtextxy(xmax-200,ymax-440,"Points : ");
+	outtextxy(xmax-200,ymax-430,"1. Bomb Strength : ");
+	outtextxy(xmax-200,ymax-420,"2. Velocity : ");
+	outtextxy(xmax-200,ymax-410,"3. Moves Left : ");
+	outtextxy(xmax-200,ymax-400,"4. Angle : ");
+	setcolor(pl.c);
+	ftoa(pl.points,points,1);
+	ftoa(pl.bomb,bomb,1);
+	ftoa(pl.v,v,1);
+	ftoa(pl.move,move,1);
+	ftoa(pl.theta,theta,1);
 	outtextxy(xmax-200,ymax-450,pl.name);
-	outtextxy(xmax-200,ymax-440,a);
-	outtextxy(xmax-200,ymax-430,b);
-	outtextxy(xmax-200,ymax-420,c);
-	outtextxy(xmax-200,ymax-410,d);
-	outtextxy(xmax-200,ymax-410,e);
+	outtextxy(xmax-200+72,ymax-440,points);
+	outtextxy(xmax-200+148,ymax-430,bomb);
+	outtextxy(xmax-200+104,ymax-420,v);
+	outtextxy(xmax-200+120,ymax-410,move);
+	outtextxy(xmax-200+80,ymax-400,theta);
 	}
 
 }
@@ -303,34 +336,35 @@ void tank (int x,int c,float theta){
 }
 
 
-
-void fire(player &pl,player &pl1){
-	setcolor(BLACK);
-	setfillstyle(SOLID_FILL,LIGHTMAGENTA);
-	int x2,x1,y2,y1;
-	x1=x2=pl.x+6+cos(d_r(pl.theta));
-	y1=y2=ymax-230-sin(d_r(pl.theta));
-	int count=0,vx=(pl.v)*cos(d_r(pl.theta)),vy=(pl.v)*sin(d_r(pl.theta));
-	for(;y1<=ymax-200;x1=x2+vx*count*0.1,y1=y2+vy*count*0.1+0.5*(-10)*count*count*0.01){
+void fire(player &pl,player &pl1,char u){
+	int x1=pl.x+6+cos(d_r(pl.theta)),y1=ymax-230-sin(d_r(pl.theta)),count=0,vx=5*(pl.v)*cos(d_r(pl.theta)),vy=5*(pl.v)*sin(d_r(pl.theta));
+	int x2=x1;
+	int y2=y1;
+	for(;y1<=ymax-200;x1=x2+vx*count*0.1,y1=y2-vy*count*0.1+0.5*60*count*count*0.01){
 	++count;
 	cleardevice();
 	set_b();
+	setcolor(LIGHTMAGENTA);
+	setfillstyle(SOLID_FILL,LIGHTMAGENTA);
 	circle(x1,y1,7); //Radius of bomb is 7 pixels.
-	floodfill((int)x1,(int)y1,BLACK);
+	floodfill(x1,y1,LIGHTMAGENTA);
 	delay(100);
+	if(x1<=0||x1>=xmax)
+		break;
+	if(pow(x1-(pl1.x),2) + pow((y1-(ymax-199-15)),2) <= 576)         
+		break;
 	}
 	cleardevice();
 	set_b();
 	explode(x1,y1);
 	point(pl1,pl,x1,y1);
-	display_d(pl);
+	display_d_all();
 }
-
 
 
 void explode(int x1,int y1){
 	int w=720; //Angular velocity
-	int r=100,count=0; 
+	int r=100,count=0;
 	int vr=284;  //Rate of change of radius.
 	for(int i=0;count*0.1<=2;++i,i=i%15){
 	setcolor(RED);
@@ -367,7 +401,7 @@ void explode(int x1,int y1){
 	arc(x1,y1,216+w*count*0.1,360+w*count*0.1,r-2);
 	arc(x1,y1,216+w*count*0.1,360+w*count*0.1,r-3);
 	arc(x1,y1,216+w*count*0.1,360+w*count*0.1,r-4);
-    
+
     setcolor(i);
     setfillstyle(SOLID_FILL,i);
     circle(x1,y1,r-5);
@@ -382,14 +416,15 @@ void explode(int x1,int y1){
 
 void point(player &pl2,player &pl1,int x1,int y1){   //player pl2 is the one who has been atatcked and pl1 is the attacker.
 	int red_f; //reducing factor.
-	if(abs(pl2.x-x1)<100){
+	int distance = pow(pow(x1-(pl2.x),2) + pow((y1-(ymax-199-15)),2),0.5);
+	if(distance<100){
 	 red_f = abs(pl2.x-x1);
 	 }
-	if(abs(pl2.x-x1)>100);
+	if(distance>100);
 		//no INCREMENT in points.
-	else if(abs(pl2.x-x1)<40)
+	else if(distance<40)
 		pl1.points += pl1.bomb;  //MAXX IMPACT.
-	else 
+	else
 		pl1.points += pl1.bomb - red_f ;
 }
 
@@ -415,32 +450,32 @@ void tankmove(player &pl1,player &pl2,char a){   //pl1 is moving.
 			delay(100);
 			++count;
 		}
-	}	
+	}
 }
 
 
 void main(){
-player1.x = 75;
-player1.theta = 45;
-player2.x = xmax-200;
-player2.theta = 135;
+ofstream game_history("game_history.txt",ios::app);
 
+clrscr();
 cout<<"Welcome to cTanks \n";
 cout<<"Enter details of Player 1: \n";
 cout<<"Name : \t ";
 cin>>player1.name;
 cout<<'\n';
 cout<<"Select Tank color (by entering color code) : \n";
-cout<<" Blue \t (1) \n Green \t (2) \nCyan \t (3) \nRed \t (4) \n Magenta \t (5) \n";
+cout<<"Blue\t(1)\nGreen\t(2)\nCyan\t(3)\nRed\t(4)\nMagenta\t(5)\n";
 cin>>player1.c;
 
-cout<<" \n Enter details of Player 2: \n";
+cout<<" \nEnter details of Player 2: \n";
 cout<<"Name : \t ";
 cin>>player2.name;
 cout<<'\n';
 cout<<"Select Tank color (by entering color code) : \n";
-cout<<" Blue \t (1) \n Green \t (2) \n Cyan \t (3) \n Red \t (4) \n Magenta \t (5) \n";
+cout<<"Blue\t(1)\nGreen\t(2)\nCyan\t(3)\nRed\t(4)\nMagenta\t(5)\n";
 cin>>player2.c;
+
+game_history<<"\n \n"<<player1.name<<" VS "<<player2.name;
 
 clrscr();
 
@@ -448,9 +483,15 @@ clrscr();
 int gd = DETECT,gm,choice;
 initgraph(&gd,&gm,"C:\\TC\\BGI");
 xmax = getmaxx(); ymax = getmaxy();
+player1.x = 75;
+player1.theta = 45;
+player2.x = xmax-200;
+player2.theta = 135;
 environment();
-tank(player1.x,player1.c,d_r(player1.theta));	// constructing tank for player 1
-tank(player2.x,player2.c,d_r(player2.theta));	// constructing tank for player 2
+tank(player1.x,player1.c,player1.theta);	// constructing tank for player 1
+getch();
+tank(player2.x,player2.c,player2.theta);	// constructing tank for player 2
+getch();
 display_d(player1,'1');
 display_d(player2,'2');
 instructions();
@@ -458,6 +499,7 @@ instructions();
 int stest;
 char l='1';
 for(int i=1;i<=10;i++,l++){
+	game_history<<"\n\nVOLLEY "<<i;
 	label1:
 	d_volley(i,l);
 	environment();
@@ -465,11 +507,14 @@ for(int i=1;i<=10;i++,l++){
 	outtextxy(5,ymax-195,"Player1's Turn (Press Number)");
 	cin>>choice;
 	if(choice==0)
-		fire(player1,player2);
-	else if(choice==1||choice==2||choice==3||choice==4){ 
+		fire(player1,player2,'1');
+	else if(choice==1||choice==2||choice==3||choice==4){
 		stest = modify(choice,player1,player2);
 		if(stest){
-			outtextxy(5,ymax-12,"MODIFICATION SUCCESSFUL!");	
+			outtextxy(5,ymax-12,"MODIFICATION SUCCESSFUL!");
+			setfillstyle(SOLID_FILL,BLACK);
+			bar(player1.x-40,ymax-270,player1.x+40,ymax-200);
+			tank(player1.x,player1.c,player1.theta);
 		}
 		else{
 			outtextxy(5,ymax-12,"MODIFICATION UNSUCCESSFUL!");
@@ -478,14 +523,19 @@ for(int i=1;i<=10;i++,l++){
 		display_d(player1,'1');
 		goto label1;
 		}
-	
-	else{ 
-		outtextxy(5,ymax-195,"WRONG CHOICE");
+
+	else{
+		outtextxy(5,ymax-185,"WRONG CHOICE");
 		delay(2000);
 		goto label1;
 	}
 	display_d(player1,'1');
 	d_volley(i,l);
+	game_history<<'\n'<<player1.name;
+	game_history<<'\n'<<"ANGLE : "<<player1.theta;
+	game_history<<'\n'<<"VELOCITY : "<<player1.v;
+	game_history<<'\n'<<"BOMB : "<<player1.bomb;
+	game_history<<'\n'<<"POINTS : "<<player1.points;
 
 	label2:
 	environment();
@@ -493,11 +543,14 @@ for(int i=1;i<=10;i++,l++){
 	outtextxy(5,ymax-195,"Player2's Turn (Press Number)");
 	cin>>choice;
 	if(choice==0)
-		fire(player2,player1);
-	else if(choice==1||choice==2||choice==3||choice==4){ 
+		fire(player2,player1,'2');
+	else if(choice==1||choice==2||choice==3||choice==4){
 		stest = modify(choice,player2,player1);
 		if(stest){
-			outtextxy(5,ymax-12,"MODIFICATION SUCCESSFUL!");	
+			outtextxy(5,ymax-12,"MODIFICATION SUCCESSFUL!");
+			setfillstyle(SOLID_FILL,BLACK);
+			bar(player2.x-60,ymax-270,player2.x+40,ymax-200);
+			tank(player2.x,player2.c,player2.theta);
 		}
 		else{
 			outtextxy(5,ymax-12,"MODIFICATION UNSUCCESSFUL!");
@@ -506,26 +559,34 @@ for(int i=1;i<=10;i++,l++){
 		display_d(player2,'2');
 		goto label2;
 	}
-	else{ 
-		outtextxy(5,ymax-195,"WRONG CHOICE");
+	else{
+		outtextxy(5,ymax-185,"WRONG CHOICE");
 		delay(2000);
 		goto label2;
 	}
 	display_d(player2,'2');
+	game_history<<'\n\n'<<player2.name;
+	game_history<<'\n'<<"ANGLE : "<<player2.theta;
+	game_history<<'\n'<<"VELOCITY : "<<player2.v;
+	game_history<<'\n'<<"BOMB : "<<player2.bomb;
+	game_history<<'\n'<<"POINTS : "<<player2.points;
 	}
 
-	
+
 if(player1.points>player2.points){
-	outtextxy(xmax*0.5,ymax*0.5,player1.name);
-	outtextxy(xmax*0.5,ymax*0.5+10,"WINS");
+	outtextxy(xmax*0.5,ymax*0.5-50,player1.name);
+	outtextxy(xmax*0.5,ymax*0.5-40,"WINS");
+	game_history<<'\n'<<player1.name<<" WON";
 }
 else if(player2.points>player1.points){
-	outtextxy(xmax*0.5,ymax*0.5,player2.name);
-	outtextxy(xmax*0.5,ymax*0.5+10,"WINS");
+	outtextxy(xmax*0.5,ymax*0.5-50,player2.name);
+	outtextxy(xmax*0.5,ymax*0.5-40,"WINS");
+	game_history<<'\n'<<player2.name<<" WON";
 }
-else 
-outtextxy(xmax*0.5,ymax*0.5,"ITS A TIE!"); 	
-
+else{
+	outtextxy(xmax*0.5,ymax*0.5-50,"ITS A TIE!");
+	game_history<<"IT WAS A TIE";
+}
 getch();
 closegraph();	
 
