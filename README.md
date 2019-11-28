@@ -1,6 +1,5 @@
 # cTanks
-CBSE Project for class 12
-(Using Graphics)
+GUI based 2 Player game
 
 # How to use ?
 1. Clone this repository to your system
